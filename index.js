@@ -1,7 +1,12 @@
-var oneDay = 1000 * 60 * 60 * 24
-  , formats = {};
-  
-exports.formats = formats;
+var formats = exports.formats = {};
+
+var units = exports.units = {
+    second  : 1000
+  , minute  : 60000
+  , day     : 86400000
+  , month   : 2592000000
+  , year    : 31536000000
+};
 
 /**
  * Returns a date as a formatted string
@@ -59,10 +64,10 @@ exports.format = function (date, format) {
 exports.parse = function (string, format) {
   var tokens
     , index
-    , parts = {}
-    , offset = 0
     , stringLength
-    , tokenLength;
+    , tokenLength
+    , parts = {}
+    , offset = 0;
   
   format = formats[format] || format;
   
@@ -91,37 +96,34 @@ exports.parse = function (string, format) {
       offset++;
     }  
   }
-
-  return new Date(
-      parts.Y || 0
-    , (parts.M || 1) - 1
-    , parts.D || 0
-    , parts.h || 0
-    , parts.m || 0
-    , parts.s || 0
-  );
+  
+  return new Date('Y-M-D,h:m:s'.replace(/\w/g, function (part) {
+    return parts[part] || 0;
+  }));
 };
 
 /**
- * Returns the number of days until a date
+ * Returns the time until a date in a given unit
  *
  * @param {Date} date
+ * @param {String} unit
  * @return {int}
  */
 
-exports.daysUntil = function (date) {
-  return Math.round((end.valueOf() - Date.now()) / oneDay);
+exports.until = function (date, unit) {
+  return Math.round((end.valueOf() - Date.now()) / units[unit]);
 };
 
 /**
- * Returns the number of days since a date
+ * Returns the time since a date in a given unit
  *
  * @param {Date} date
+ * @param {String} unit
  * @return {int}
  */
 
-exports.daysSince = function (date) {
-  return -exports.daysUntil(date);
+exports.since = function (date, unit) {
+  return - exports.daysUntil(date, unit);
 };
 
 /**
@@ -131,15 +133,15 @@ exports.daysSince = function (date) {
  * @return {int}
  */
 
-exports.daysBetween = function (start, end) {
-  return Math.abs(Math.round((end.valueOf() - start.valueOf()) / oneDay));
+exports.between = function (start, end, unit) {
+  return Math.abs(Math.round((end.valueOf() - start.valueOf()) / units.day));
 };
 
 /**
  * Returns the number of days in a month
  *
  * @param {Date|int} year
- * @param {int} month
+ * @param {int} [month]
  */
 
 exports.daysInMonth = function (year, month) {
@@ -149,7 +151,28 @@ exports.daysInMonth = function (year, month) {
     date = new Date(year, month);
   
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-}
+};
+
+/**
+ * Returns all the dates in a month
+ *
+ * @param {Date|int} year
+ * @param {int} [month]
+ * @return {Array}
+ */
+
+exports.getFullMonth = function (year, month) {
+  var dates = []
+    , date = year;
+  
+  if (!(date instanceof Date))
+    date = new Date(year, month);
+  
+  for (var d = 1; d <= exports.daysInMonth(date); d++)
+    dates.push(new Date(date.getFullYear(), date.getMonth(), d));
+  
+  return dates;
+};
 
 /**
  * Pads out a number to two digits

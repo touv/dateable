@@ -16,7 +16,7 @@ assert.equal(parsed.getDate(), date.getDate());
 assert.equal(parsed.getHours(), date.getHours());
 assert.equal(parsed.getMinutes(), date.getMinutes());
 assert.equal(parsed.getSeconds(), date.getSeconds());
-assert.equal(dateable.daysBetween(date, parsed), 0);
-assert.equal(dateable.daysBetween(date, new Date(2012, 04, 18, 21, 10, 40)), 1);
+assert.equal(dateable.between(date, parsed, 'day'), 0);
+assert.equal(dateable.between(date, new Date(2012, 04, 18, 21, 10, 40), 'day'), 1);
 
 console.log('All tests passed');
