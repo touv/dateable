@@ -10,7 +10,7 @@ var dateable = require('dateable');
 
 var str = dateable.format(new Date(), 'YYYY-MM-DD, hh:mm'); // e.g., 2012-03-24, 22:10
 
-dateable.parse(str, 'YY-MM-DD, hh:mm') // Returns the original date
+dateable.parse(str, 'YYYY-MM-DD, hh:mm') // Returns the original date
 ```
 
 If you want to include text in the formatting, just escape it with either ' or ".
