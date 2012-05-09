@@ -1,0 +1,8 @@
+{
+    "name": "node-hotdate",
+    "description": "A date formatter and parser for node",
+    "version": "1.0.0",
+    "author": "Eivind Fjeldstad",
+    "dependencies": {},
+    "devDependencies": {}
+}
