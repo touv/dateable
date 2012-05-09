@@ -19,7 +19,6 @@ If you want to include text in the formatting, just escape it with either ' or "
 var date = new Date(2009, 6, 23)
   , format = 'D/M YYYY "was the day I went to the moon!"';
 
-
 dateable.format(date, format); // 23/5 2009 was the day I went to the moon!
 ```
 ## Why?
