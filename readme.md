@@ -16,7 +16,7 @@ dateable.parse(str, 'YY-MM-DD, hh:mm') // Returns the original date
 If you want to include text in the formatting, just escape it with either ' or ".
 
 ```javascript
-var date = new Date(2009, 6, 23)
+var date = new Date(2009, 4, 23)
   , format = 'YYYY "was the year I went to the moon!" D/M "was the date"';
 
 dateable.format(date, format); // 2009 was the year I went to the moon! 23/5 was the date!
