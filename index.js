@@ -11,7 +11,7 @@ exports.formats = formats;
  * @return {String}
  */
 
-exports.toFormat = function (date, format) {
+exports.format = function (date, format) {
   var tokens = /Y{2,4}|[MDhms]{1,2}|"[^"]*"|'[^']*'/g;
   
   format = formats[format] || format;

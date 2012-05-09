@@ -17,9 +17,9 @@ If you want to include text in the formatting, just escape it with either ' or "
 
 ```javascript
 var date = new Date(2009, 6, 23)
-  , format = 'D/M YYYY "was the day I went to the moon!"';
+  , format = 'YYYY "was the year I went to the moon!" D/M "was the date"';
 
-dateable.format(date, format); // 23/5 2009 was the day I went to the moon!
+dateable.format(date, format); // 2009 was the year I went to the moon! 23/5 was the date!
 ```
 ## Why?
 Because dates in javascript are a fucking pain in the ass!
