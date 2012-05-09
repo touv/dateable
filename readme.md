@@ -4,21 +4,23 @@ A small library that provides a few very useful methods for date manipulation, i
 ## Install
 	$ npm install dateable
 	
-## How
+## How?
 ```javascript
 var dateable = require('dateable');
 
 var str = dateable.format(new Date(), 'YYYY-MM-DD, hh:mm'); // e.g., 2012-03-24, 22:10
 
-dateable.parse(str, 'YY-MM-DD, hh:mm) // Returns the original date
+dateable.parse(str, 'YY-MM-DD, hh:mm') // Returns the original date
 ```
 
-If you want to include text in the formatting, just escape the text with either ' or ".
+If you want to include text in the formatting, just escape it with either ' or ".
 
 ```javascript
-var date = new Date(2009, 6, 23);
+var date = new Date(2009, 6, 23)
+  , format = 'D/M YYYY "was the day I went to the moon!"';
 
-dateable.format(date, 'D/M YYYY "was the day I went to the moon!"') // 23/5 2009 was the day I went to the moon!
+
+dateable.format(date, format); // 23/5 2009 was the day I went to the moon!
 ```
-## Why
+## Why?
 Because dates in javascript are a fucking pain in the ass!
