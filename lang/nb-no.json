@@ -1,0 +1,67 @@
+{
+  "MMMM": [
+    "januar",
+    "februar",
+    "mars",
+    "april",
+    "mai",
+    "juni",
+    "juli",
+    "august",
+    "september",
+    "oktober",
+    "november",
+    "desember"
+  ],
+
+  "MMM": [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "mai",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "des"
+  ],
+
+  "dddd": [
+    "søndag",
+    "mandag",
+    "tirsdag",
+    "onsdag",
+    "torsdag",
+    "fredag",
+    "lørdag"
+  ],
+
+  "ddd": [
+    "søn",
+    "man",
+    "tir",
+    "ons",
+    "tor",
+    "fre",
+    "lør"
+  ],
+
+  "units": {
+    "years": ["et år", "‰d år"],
+    "months": ["én måned", "‰d måneder"],
+    "weeks": ["én uke", "‰d uker"],
+    "days": ["én dag", "‰d dager"],
+    "hours": ["én time", "‰d timer"],
+    "minutes": ["et minutt", "‰d minutter"],
+    "seconds": ["et sekund", "‰d sekunder"]
+  },
+
+  "time": {
+    "future": "om %d",
+    "present": "akkurat nå",
+    "past": "for %d siden"
+  }
+}

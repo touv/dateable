@@ -1,0 +1,67 @@
+{
+  "MMMM": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
+
+  "MMM": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
+
+  "dddd": [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wedensday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ],
+
+  "ddd": [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ],
+
+  "units": {
+    "years": ["a year", "‰d years"],
+    "months": ["a month", "‰d months"],
+    "weeks": ["a week", "‰d weeks"],
+    "days": ["a day", "‰d days"],
+    "hours": ["an hour", "‰d hours"],
+    "minutes": ["a minute", "‰d minutes"],
+    "seconds": ["a second", "‰d seconds"]
+  },
+
+  "time": {
+    "future": "in %d",
+    "present": "just now",
+    "past": "%d ago"
+  }
+}
