@@ -8,18 +8,29 @@ A small library that provides a few very useful methods for date manipulation, i
 ```javascript
 var dateable = require('dateable');
 
-var str = dateable.format(new Date(), 'YYYY-MM-DD, hh:mm'); // e.g., 2012-03-24, 22:10
+var str = dateable.format(new Date(), 'MM/DD-YYYY, hh:mm'); // e.g., 03/23-2012, 22:10
 
-dateable.parse(str, 'YYYY-MM-DD, hh:mm') // Returns the original date
+dateable.parse(str, 'MM/DD-YYYY, hh:mm') // Returns the original date
 ```
 
 If you want to include text in the formatting, just escape it with either ' or ".
 
 ```javascript
 var date = new Date(2009, 4, 23)
-  , format = 'YYYY "was the year I went to the moon!" D/M "was the date"';
+  , format = '"I went to the moon in" YYYY. "I think it was a" dddd "in" MMMM';
 
-dateable.format(date, format); // 2009 was the year I went to the moon! 23/5 was the date!
+dateable.format(date, format); // I went to the moon in 2009. I think it was a Saturday in May
 ```
+You can also get the answer to simple questions, such as:
+
+```javascript
+var date = new Date(2008, 4, 20);
+
+dateable.when(date); // 4 years ago
+
+// The same question can be asked for future days
+dateable.when(new Date(2020, 4, 30)); // in 8 years
+```
+
 ## Why?
-Because dates in javascript are a fucking pain in the ass!
+Because dealing with dates in javascript is a fucking pain in the ass!
