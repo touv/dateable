@@ -21,7 +21,7 @@ var date = new Date(2009, 4, 23)
 
 dateable.format(date, format); // I went to the moon in 2009. I think it was a Saturday in May
 ```
-You can also get the answer to simple questions, such as:
+You can also get the answers to simple questions, such as:
 
 ```javascript
 var date = new Date(2008, 4, 20);
@@ -30,6 +30,9 @@ dateable.when(date); // 4 years ago
 
 // The same question can be asked for future days
 dateable.when(new Date(2020, 4, 30)); // in 8 years
+
+// And because I'm nice:
+dateable.diff(date, new Date(2015), new Date()); // 3 years
 ```
 
 ## Why?
