@@ -299,7 +299,7 @@ function toDate (obj) {
     abbr = abbr.toLowerCase();
     
     if (abbr == 'pm' && obj.h < 12)
-      obj.H == obj.h + 12;
+      obj.H = obj.h + 12;
   }
     
   // Handle years
