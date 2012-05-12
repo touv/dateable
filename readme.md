@@ -1,5 +1,5 @@
 # dateable
-A small library that provides a few very useful methods for date manipulation, including a formatter and a parser.
+A small library that provides a few very useful methods for displaying dates, including a formatter and a parser.
 
 ## Install
 	$ npm install dateable
@@ -31,8 +31,8 @@ dateable.when(date); // 4 years ago
 // The same question can be asked for future days
 dateable.when(new Date(2020, 4, 30)); // in 8 years
 
-// And because I'm nice:
-dateable.diff(date, new Date(2015), new Date()); // 3 years
+// You can also get the difference between two dates:
+dateable.diff(new Date(2015), new Date()); // 3 years
 ```
 
 ## Why?

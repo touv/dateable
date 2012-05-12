@@ -10,7 +10,7 @@ files.forEach(function (filename) {
   langs[language] = require(path.resolve('lang', filename));
 });
 
-var units = exports.units = {
+var units = exports.units = {
     years   : 31536000000
   , months  : 2592000000
   , weeks   : 604800000
@@ -25,6 +25,20 @@ var formats = exports.formats = {};
 // Set the default language
 var lang = langs['en-us'];
 
+
+/**
+ * Set the language
+ *
+ * @param {String|Object} language
+ * @api public
+ */
+
+exports.setLang = function (language) {
+  if (typeof language == 'object')
+    lang = language;
+  else if (langs[language])
+    lang = langs[language];
+};
 
 /**
  * Returns a date as a formatted string
@@ -127,7 +141,6 @@ exports.parse = function (string, format) {
     
     // Looks ahead for characters beyond the
     // specified format, e.g, D > 9
-    if (tokenLength)
     while (++index < stringLength) {
       if (!(/\d|\w/).test(string[index]))
         break;
@@ -137,11 +150,11 @@ exports.parse = function (string, format) {
 
     offset += part.length - tokenLength;
 
-    if (/[Md]{3,4}/.test(token[0])) {
-      part = lang[token[0]].indexOf(part) || '';
-      if (token[0][0] === 'M') part++
-    }
-
+    if (/[Md]{3,4}/.test(token[0]))
+      part = lang[token[0]].indexOf(part);
+    else if (token[0][0] === 'M')
+      part--;
+      
     parts[token[0][0]] = part;
   }
   
@@ -172,16 +185,13 @@ exports.fromAmPm = function (hours, abbr) {
 /**
  * Converts from 24-horus to 12-hours
  *
- * @param {String|Date|int} hours
+ * @param {String|int} hours
  * @return {int}
  * @api public
  */
 
 exports.toAmPm = function (hours) {
-  if (hours instanceof Date)
-    hours = hours.getHours();
-  else
-    hours = parseInt(hours, 10);
+  hours = parseInt(hours, 10);
   
   if (hours > 12)
     return hours - 12;
@@ -211,75 +221,81 @@ exports.isAmPm = function (hours) {
  * Returned unit can be specified or omitted
  *
  * @param {Date} date
- * @param {String} unit
+ * @param {String} [unit]
  * @return {String}
  * @api public
  */
 
 exports.when = function (date, unit) {
-  var diff = Date.now() - date.valueOf()
-    , result = exports.inUnit(diff, unit)
-    , time = 'present';
-    
-  if (result.value < 0) time = 'future';
-  else if (result.value > 0) time = 'past';
+  var diff = date.valueOf() - Date.now()
+    , time = 'present'
+
+  unit = unit || determineUnit(diff);
+  diff = Math.round(diff / units[unit])
+
+  if (diff !== 0)
+    time = diff < 0 ? 'past' : 'future';
+
+  diff = Math.abs(diff);
   
-  result.value = Math.abs(result.value);
-  return printify(lang.time[time], [result.unit, result.value]);
+  return printify(lang.time[time], pluralize(diff, unit));
 };
 
 /**
- * Returns the number of days between two dates
+ * Returns the difference between two dates
  *
- * @param {Date} date
- * @return {int}
+ * @param {Date} start
+ * @param {Date} end
+ * @param {String} [unit]
+ * @return {String} 
  * @api public
  */
 
 exports.diff = function (start, end, unit) {
   var diff = start.valueOf() - end.valueOf()
-    , result = inUnit(diff, unit);
-
-  return printify(result.unit, result.value);
+    , unit = unit || determineUnit(diff)
+  
+  diff = Math.abs(Math.round(diff / units[unit]))
+  
+  return pluralize(diff, unit);
 };
 
 /**
- * Calculates a timeframe in a given unit.
- * If unit is omitted, it will try to find the one that's best suited
- * Returns an Object containing the value and the unit
+ * Returns the value in either plural or singular form
  *
- * @param {int} ms
- * @param {String} [unit]
- * @return {Object}
- * @api public
+ * @param {int} value
+ * @param {String} unit
+ * @return {String}
+ * @api private
  */
 
-exports.inUnit = function (ms, unit) {
-  var keys = Object.keys(units)
-    , result = {}
-    , value
-    
-  if (!unit || !units[unit]) {
-    for (var i = 0; i < keys.length; i++) {
-      unit = keys[i];
-      value = ms / units[unit];
-      
-      if (Math.abs(value) >= 1)
-        break;
-    }
-  } else {
-    value = ms / units[unit];
+function pluralize (value, unit) {
+  var form = lang.units[unit][value > 1 ? 1 : 0];
+  
+  return printify(form, value);
+};
+
+/**
+ * Determine the unit that's best suited for
+ * displaying the given period of time
+ *
+ * @param {int} ms
+ * @return {String}
+ * @api private
+ */
+
+function determineUnit (ms) {
+  var unit;
+  
+  ms = Math.abs(ms);
+  
+  for (unit in units) {
+    if (ms > units[unit])
+      break;
   }
   
-  result.value = Math.round(value);
-  
-  if (Math.abs(result.value) > 1)
-    result.unit = lang.units[unit][1];
-  else
-    result.unit = lang.units[unit][0];
-    
-  return result;
-};
+  return unit;
+}
 
 /**
  * Sprinf-like method for parsing output strings
@@ -346,14 +362,14 @@ function toDate (obj) {
   }
   
   date.setFullYear(obj.Y || 0);
-  date.setMonth((obj.M || 1) - 1);
+  date.setMonth(obj.M || 0);
   date.setDate(obj.D || 0);
   date.setHours(obj.H || 0);
   date.setMinutes(obj.m || 0);
   date.setSeconds(obj.s || 0);
-  
+
   return date;
-};
+}
 
 /**
  * Converts a date to an Object
@@ -380,4 +396,4 @@ function toObject (date) {
   obj.A = obj.a.toUpperCase();
   
   return obj;
-};
+}

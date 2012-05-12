@@ -14,7 +14,7 @@ var tests = module.exports = {
   'test parse': function () {
     var date = new Date(1992, 1, 25, 7, 0, 1)
       , expected = date.valueOf();
-      
+
     date = dateable.format(date, 'test');
     assert.equal(dateable.parse(date, 'test').valueOf(), expected);
   },
@@ -24,11 +24,16 @@ var tests = module.exports = {
     
     date.setHours(date.getHours() - 2);
     assert.equal(dateable.when(date), '2 hours ago');
+  },
+  
+  'test diff': function () {
+    var diff = dateable.diff(new Date(2000, 1), new Date(2009, 1));
+    
+    assert.equal(diff, '9 years');
   }
 };
 
-for (var t in tests) {
+for (var t in tests)
   tests[t]();
-};
 
-console.log('all tests passed');
+console.log('All tests completed successfully');
