@@ -31,7 +31,7 @@ dateable.when(date); // 4 years ago
 // The same question can be asked for future days
 dateable.when(new Date(2020, 4, 30)); // in 8 years
 
-// You can also get the difference between two dates:
+// And...
 dateable.diff(new Date(2015), new Date()); // 3 years
 ```
 
