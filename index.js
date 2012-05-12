@@ -37,7 +37,7 @@ var lang = langs['en-us'];
 exports.format = function (date, format) {
   var tokens = /Y{2,4}|[Md]{1,4}|[DHhms]{1,2}|[Aa]|"[^"]*"|'[^']*'/g
     , date = toObject(date);
-  
+    
   format = formats[format] || format;
 
   return format.replace(tokens, function (part) {
@@ -45,7 +45,7 @@ exports.format = function (date, format) {
       case 'YYYY':
         return pad(date.Y, 3);
       case 'YY':
-        return pad(date.Y);
+        return ('' + date.Y).slice(-2);
       case 'MMMM':
       case 'MMM':
         return lang[part][date.M];
@@ -95,35 +95,29 @@ exports.format = function (date, format) {
  */
 
 exports.parse = function (string, format) {
-  var tokens
-    , index
-    , stringLength
-    , tokenLength
-    , part
+  var tokenizer = /Y{2,4}|[Md]{1,4}|[DHhms]{1,2}|[Aa]/g 
+    , offset = 0
     , parts = {}
-    , offset = 0;
+    , token
+    , index
+    , part
   
   format = formats[format] || format;
-
   // Strip the string from the escaped parts of the format
   format = format.replace(/"[^"]*"|'[^']*'/g, function (str) {
     string = string.replace(str.slice(1, -1), '');
     return '';
   });
   
-  // Generate tokens
-  tokens = format.match(/Y{2,4}|[Md]{1,4}|[DHhms]{1,2}|[Aa]/g);
   stringLength = string.length;
   
-  for (var i = 0; i < tokens.length; i++) {
-    index = format.indexOf(tokens[i]) + offset;
+  while (token = tokenizer.exec(format)) {
+    index = token.index + offset;
     
-    if (index - offset < 0) continue;
-    
-    tokenLength = tokens[i].length;
+    tokenLength = token[0].length;
     part = string.substr(index, tokenLength);
     index += tokenLength - 1;
-
+    
     // Remove characters that are not part of the format
     // e.g, MMMM > May
     part = part.replace(/\W+.*/, function (str) {
@@ -133,21 +127,22 @@ exports.parse = function (string, format) {
     
     // Looks ahead for characters beyond the
     // specified format, e.g, D > 9
+    if (tokenLength)
     while (++index < stringLength) {
       if (!(/\d|\w/).test(string[index]))
         break;
       
       part += string[index];
     }
-    
+
     offset += part.length - tokenLength;
-    
-    if (/[Md]{3,4}/.test(tokens[i])) {
-      part = lang[tokens[i]].indexOf(part) || '';
-      if (tokens[i][0] === 'M') part++
+
+    if (/[Md]{3,4}/.test(token[0])) {
+      part = lang[token[0]].indexOf(part) || '';
+      if (token[0][0] === 'M') part++
     }
-    
-    parts[tokens[i][0]] = part;
+
+    parts[token[0][0]] = part;
   }
   
   return toDate(parts);
@@ -230,8 +225,7 @@ exports.when = function (date, unit) {
   else if (result.value > 0) time = 'past';
   
   result.value = Math.abs(result.value);
-  
-  return parseString(lang.time[time], parseString(result.unit, result.value));
+  return printify(lang.time[time], [result.unit, result.value]);
 };
 
 /**
@@ -245,8 +239,8 @@ exports.when = function (date, unit) {
 exports.diff = function (start, end, unit) {
   var diff = start.valueOf() - end.valueOf()
     , result = inUnit(diff, unit);
-  
-  return parseString(result.unit, result.value);
+
+  return printify(result.unit, result.value);
 };
 
 /**
@@ -267,8 +261,9 @@ exports.inUnit = function (ms, unit) {
     
   if (!unit || !units[unit]) {
     for (var i = 0; i < keys.length; i++) {
-      value = ms / units[unit];
       unit = keys[i];
+      value = ms / units[unit];
+      
       if (Math.abs(value) >= 1)
         break;
     }
@@ -278,7 +273,7 @@ exports.inUnit = function (ms, unit) {
   
   result.value = Math.round(value);
   
-  if (Math.abs(value) > 1 && lang.units[unit][1])
+  if (Math.abs(result.value) > 1)
     result.unit = lang.units[unit][1];
   else
     result.unit = lang.units[unit][0];
@@ -294,17 +289,22 @@ exports.inUnit = function (ms, unit) {
  * @api private
  */
 
-function parseString (string) {
+function printify (string) {
   var args = [].slice.call(arguments, 1)
     , offset = 0;
-
-  return string.replace(/%d([0-9])*/g, function (s, n) {
-    n = (n || 0 + offset);  
-    offset++;
     
+  return string.replace(/%s([0-9])*/g, function (s, n) {
+    n = n || offset;
+   
+    if (args[n] && Array.isArray(args[n])) 
+      args[n] = printify.apply(null, args[n]);
+
+    offset++;
+
     return args[n];
   });
-};
+}
+
 
 /**
  * Pads a number with zeros
@@ -336,6 +336,14 @@ function toDate (obj) {
   // Handle AM/PM
   if (abbr && obj.h)
     obj.H = exports.fromAmPm(obj.h, abbr);
+    
+  // Handle years
+  if (obj.Y && obj.Y.length == 2) {
+    if (parseInt(obj.Y, 10) > 50)
+      obj.Y = '19' + obj.Y;
+    else
+      obj.Y = '20' + obj.Y;
+  }
   
   date.setFullYear(obj.Y || 0);
   date.setMonth((obj.M || 1) - 1);
@@ -358,7 +366,6 @@ function toDate (obj) {
 function toObject (date) {
   var obj = {
       Y: date.getFullYear()
-    , y: date.getYear()
     , M: date.getMonth()
     , D: date.getDate()
     , d: date.getDay()
@@ -367,7 +374,7 @@ function toObject (date) {
     , m: date.getMinutes()
     , s: date.getSeconds()
   };
-  
+
   obj.h = exports.toAmPm(obj.H);
   obj.a = exports.isAmPm(obj.H);
   obj.A = obj.a.toUpperCase();

@@ -50,18 +50,18 @@
   ],
 
   "units": {
-    "years": ["et år", "‰d år"],
-    "months": ["én måned", "‰d måneder"],
-    "weeks": ["én uke", "‰d uker"],
-    "days": ["én dag", "‰d dager"],
-    "hours": ["én time", "‰d timer"],
-    "minutes": ["et minutt", "‰d minutter"],
-    "seconds": ["et sekund", "‰d sekunder"]
+    "years": ["et år", "%s år"],
+    "months": ["én måned", "%s måneder"],
+    "weeks": ["én uke", "%s uker"],
+    "days": ["én dag", "%s dager"],
+    "hours": ["én time", "%s timer"],
+    "minutes": ["et minutt", "%s minutter"],
+    "seconds": ["et sekund", "%s sekunder"]
   },
 
   "time": {
-    "future": "om %d",
+    "future": "om %s",
     "present": "akkurat nå",
-    "past": "for %d siden"
+    "past": "for %s siden"
   }
 }
