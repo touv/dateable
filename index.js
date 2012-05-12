@@ -162,61 +162,6 @@ exports.parse = function (string, format) {
 };
 
 /**
- * Converts from 12-hours to 24-hours
- *
- * @param {String|int} hours
- * @param {String} abbr
- * @return {int}
- * @api public
- */
-
-exports.fromAmPm = function (hours, abbr) {
-  hours = parseInt(hours, 10);
-  abbr = abbr
-    .toLowerCase()
-    .replace(/\./g, '');
-
-  if (abbr == 'pm' && hours < 12)
-    return hours + 12;
-  
-  return hours;
-};
-
-/**
- * Converts from 24-horus to 12-hours
- *
- * @param {String|int} hours
- * @return {int}
- * @api public
- */
-
-exports.toAmPm = function (hours) {
-  hours = parseInt(hours, 10);
-  
-  if (hours > 12)
-    return hours - 12;
-  
-  return hours;
-};
-
-/**
- * Returns either "am" or "pm", depending on the input
- *
- * @param {String|Date|int} hours
- * @return {int}
- * @api public
- */
-
-exports.isAmPm = function (hours) {
-  if (hours instanceof Date)
-    hours = hours.getHours();
-  else
-    hours = parseInt(hours, 10);
-  
-  return hours >= 12 ? 'pm' : 'am';
-}
-
-/**
  * Answers the question "when?"
  * Returned unit can be specified or omitted
  *
@@ -347,11 +292,15 @@ function pad (number, zeros) {
  
 function toDate (obj) {
   var date = new Date(0)
-    , abbr = obj.A || obj.a
+    , abbr = obj.a || obj.A
   
   // Handle AM/PM
-  if (abbr && obj.h)
-    obj.H = exports.fromAmPm(obj.h, abbr);
+  if (!obj.H && obj.h && abbr) {
+    abbr = abbr.toLowerCase();
+    
+    if (abbr == 'pm' && obj.h < 12)
+      obj.H == obj.h + 12;
+  }
     
   // Handle years
   if (obj.Y && obj.Y.length == 2) {
@@ -391,8 +340,8 @@ function toObject (date) {
     , s: date.getSeconds()
   };
 
-  obj.h = exports.toAmPm(obj.H);
-  obj.a = exports.isAmPm(obj.H);
+  obj.h = obj.H - (obj.H > 12 ? 12 : 0);
+  obj.a = obj.H >= 12 ? 'pm' : 'am';
   obj.A = obj.a.toUpperCase();
   
   return obj;
