@@ -25,28 +25,12 @@ var formats = exports.formats = {};
 // Set the default language
 var lang = langs['en-us'];
 
-
-/**
- * Set the language
- *
- * @param {String|Object} language
- * @api public
- */
-
 exports.setLang = function (language) {
   if (typeof language == 'object')
     lang = language;
   else if (langs[language])
     lang = langs[language];
 };
-
-/**
- * Returns a date as a formatted string
- *
- * @param {Date} date
- * @param {String} format
- * @return {String}
- */
 
 exports.format = function (date, format) {
   var tokens = /Y{2,4}|[Md]{1,4}|[DHhms]{1,2}|[Aa]|"[^"]*"|'[^']*'/g
@@ -99,14 +83,6 @@ exports.format = function (date, format) {
     }
   });
 };
-
-/**
- * Parses a date based on a format
- *
- * @param {String} string
- * @param {String} format
- * @return {Date} 
- */
 
 exports.parse = function (string, format) {
   var tokenizer = /Y{2,4}|[Md]{1,4}|[DHhms]{1,2}|[Aa]/g 
@@ -161,16 +137,6 @@ exports.parse = function (string, format) {
   return toDate(parts);
 };
 
-/**
- * Answers the question "when?"
- * Returned unit can be specified or omitted
- *
- * @param {Date} date
- * @param {String} [unit]
- * @return {String}
- * @api public
- */
-
 exports.when = function (date, unit) {
   var diff = date.valueOf() - Date.now()
     , time = 'present'
@@ -186,16 +152,6 @@ exports.when = function (date, unit) {
   return printify(lang.time[time], pluralize(diff, unit));
 };
 
-/**
- * Returns the difference between two dates
- *
- * @param {Date} start
- * @param {Date} end
- * @param {String} [unit]
- * @return {String} 
- * @api public
- */
-
 exports.diff = function (start, end, unit) {
   var diff = start.valueOf() - end.valueOf()
     , unit = unit || determineUnit(diff)
@@ -205,29 +161,11 @@ exports.diff = function (start, end, unit) {
   return pluralize(diff, unit);
 };
 
-/**
- * Returns the value in either plural or singular form
- *
- * @param {int} value
- * @param {String} unit
- * @return {String}
- * @api private
- */
-
 function pluralize (value, unit) {
   var form = lang.units[unit][value > 1 ? 1 : 0];
   
   return printify(form, value);
 };
-
-/**
- * Determine the unit that's best suited for
- * displaying the given period of time
- *
- * @param {int} ms
- * @return {String}
- * @api private
- */
 
 function determineUnit (ms) {
   var unit;
@@ -241,14 +179,6 @@ function determineUnit (ms) {
   
   return unit;
 }
-
-/**
- * Sprinf-like method for parsing output strings
- *
- * @param {String}
- * @return {String}
- * @api private
- */
 
 function printify (string) {
   var args = [].slice.call(arguments, 1)
@@ -266,29 +196,11 @@ function printify (string) {
   });
 }
 
-
-/**
- * Pads a number with zeros
- *
- * @param {int} number
- * @param {int} [zeros]
- * @return {String}
- * @api private
- */
-
 function pad (number, zeros) {
   return number < Math.pow(10, zeros || 1) 
     ? '0' + number 
     : '' + number;
 }
-
-/**
- * Converts an Object to a date
- *
- * @param {Object} parts
- * @return {Date}
- * @api private
- */
  
 function toDate (obj) {
   var date = new Date(0)
@@ -319,14 +231,6 @@ function toDate (obj) {
 
   return date;
 }
-
-/**
- * Converts a date to an Object
- *
- * @param {Date} date
- * @return {Object}
- * @api private
- */
 
 function toObject (date) {
   var obj = {
