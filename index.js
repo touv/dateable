@@ -1,13 +1,13 @@
 var fs = require('fs')
   , path = require('path')
-  , files = fs.readdirSync('./lang')
+  , files = fs.readdirSync(path.join(__dirname, 'lang'))
   , langs = {}
   , lang
 
 files.forEach(function (filename) {
   var language = filename.replace(/\.json$/, '');
   
-  langs[language] = require(path.resolve('lang', filename));
+  langs[language] = require('./lang/' + filename);
 });
 
 var units = exports.units = {
