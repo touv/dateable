@@ -99,12 +99,12 @@ exports.parse = function (string, format) {
     return '';
   });
   
-  stringLength = string.length;
+  var stringLength = string.length;
   
   while (token = tokenizer.exec(format)) {
     index = token.index + offset;
     
-    tokenLength = token[0].length;
+    var tokenLength = token[0].length;
     part = string.substr(index, tokenLength);
     index += tokenLength - 1;
     
